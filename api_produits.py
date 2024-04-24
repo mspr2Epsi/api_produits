@@ -1,5 +1,6 @@
 from db_connector import connect_to_database, close_connection
 from flask import Flask, request, jsonify
+from roles import  read_possible,update_possible,creation_possible,delete_possible
 
 db_connection = connect_to_database()
 cursor = db_connection.cursor()
@@ -7,6 +8,10 @@ app = Flask(__name__)
 
 @app.route('/products', methods=['GET'])
 def get_products():
+    token = request.headers.get('Authorization')
+    if read_possible(token) != True:
+        return jsonify({'message': 'Unauthorized'}), 401
+    
     cursor.execute("SELECT * FROM produits")
     products = cursor.fetchall()
     output = []
@@ -24,6 +29,10 @@ def get_products():
 
 @app.route('/products/<int:produit_id>', methods=['GET'])
 def get_product(produit_id):
+    token = request.headers.get('Authorization')
+    if read_possible(token) != True:
+        return jsonify({'message': 'Unauthorized'}), 401
+    
     cursor.execute("SELECT * FROM produits WHERE ProduitID = %s", (produit_id,))
     product = cursor.fetchone()
     if product:
@@ -41,6 +50,10 @@ def get_product(produit_id):
     
 @app.route('/products', methods=['POST'])
 def add_product():
+    token = request.headers.get('Authorization')
+    if creation_possible(token) != True:
+        return jsonify({'message': 'Unauthorized'}), 401 
+       
     data = request.get_json()
     query = "INSERT INTO produits (Nom, Description, PrixUnitaire, Stock, Fournisseur) VALUES (%s, %s, %s, %s, %s)"
     values = (data['Nom'], data['Description'], data['PrixUnitaire'], data['Stock'], data['Fournisseur'])
@@ -50,6 +63,10 @@ def add_product():
 
 @app.route('/products/<int:product_id>', methods=['DELETE'])
 def delete_product(product_id):
+    token = request.headers.get('Authorization')
+    if delete_possible(token) != True:
+        return jsonify({'message': 'Unauthorized'}), 401 
+        
     cursor.execute("DELETE FROM produits WHERE ProduitID = %s", (product_id,))
     db_connection.commit()  
     if cursor.rowcount > 0:
@@ -59,8 +76,11 @@ def delete_product(product_id):
 
 @app.route('/products/<int:product_id>', methods=['PUT'])
 def update_product(product_id):
+    token = request.headers.get('Authorization')
+    if update_possible(token) != True:
+        return jsonify({'message': 'Unauthorized'}), 401 
+    
     data = request.get_json()  
-
     required_keys = ['Nom', 'Description', 'PrixUnitaire', 'Stock', 'Fournisseur']
     if not all(key in data for key in required_keys):
         return jsonify({'message': 'Incomplete data'}), 400
