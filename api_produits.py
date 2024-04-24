@@ -50,7 +50,7 @@ def add_product():
 
 @app.route('/products/<int:product_id>', methods=['DELETE'])
 def delete_product(product_id):
-    cursor.execute("DELETE FROM products WHERE ProductID = %s", (product_id,))
+    cursor.execute("DELETE FROM produits WHERE ProduitID = %s", (product_id,))
     db_connection.commit()  
     if cursor.rowcount > 0:
         return jsonify({'message': 'Product deleted with success'}), 200
@@ -66,9 +66,9 @@ def update_product(product_id):
         return jsonify({'message': 'Incomplete data'}), 400
 
     cursor.execute("""
-        UPDATE products 
+        UPDATE produits 
         SET Nom = %s, Description = %s, PrixUnitaire = %s, Stock = %s, Fournisseur = %s 
-        WHERE ProductID = %s
+        WHERE ProduitID = %s
         """, (data['Nom'], data['Description'], data['PrixUnitaire'], data['Stock'], data['Fournisseur'], product_id))
     db_connection.commit()  
 
