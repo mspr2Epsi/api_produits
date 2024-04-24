@@ -1,7 +1,5 @@
-import mysql.connector
 from db_connector import connect_to_database, close_connection
 from flask import Flask, request, jsonify
-
 
 db_connection = connect_to_database()
 cursor = db_connection.cursor()
@@ -41,15 +39,6 @@ def get_product(produit_id):
     else:
         return jsonify({'message': 'Produit non trouvé'}), 404
     
-@app.route('/customers/<int:customer_id>', methods=['PUT'])
-def update_customer(customer_id):
-    data = request.get_json()
-    query = "UPDATE customers SET FirstName = %s, LastName = %s, Email = %s WHERE CustomerID = %s"
-    values = (data['FirstName'], data['LastName'], data['Email'], customer_id)
-    cursor.execute(query, values)
-    db_connection.commit()
-    return jsonify({'message': 'Fiche client mise à jour avec succès!'})    
-
 @app.route('/products', methods=['POST'])
 def add_product():
     data = request.get_json()
@@ -59,11 +48,34 @@ def add_product():
     db_connection.commit()
     return jsonify({'message': 'Product added successfully!'})
 
-@app.route('/customers/<int:customer_id>', methods=['DELETE'])
-def delete_customer(customer_id):
-    cursor.execute("DELETE FROM customers WHERE CustomerID = %s", (customer_id,))
-    db_connection.commit()
-    return jsonify({'message': 'Fiche client supprimée avec succès!'})
+@app.route('/products/<int:product_id>', methods=['DELETE'])
+def delete_product(product_id):
+    cursor.execute("DELETE FROM products WHERE ProductID = %s", (product_id,))
+    db_connection.commit()  
+    if cursor.rowcount > 0:
+        return jsonify({'message': 'Produit supprimé avec succès'}), 200
+    else:
+        return jsonify({'message': 'Produit non trouvé'}), 404
+
+@app.route('/products/<int:product_id>', methods=['PUT'])
+def update_product(product_id):
+    data = request.get_json()  
+
+    required_keys = ['Nom', 'Description', 'PrixUnitaire', 'Stock', 'Fournisseur']
+    if not all(key in data for key in required_keys):
+        return jsonify({'message': 'Données incomplètes'}), 400
+
+    cursor.execute("""
+        UPDATE products 
+        SET Nom = %s, Description = %s, PrixUnitaire = %s, Stock = %s, Fournisseur = %s 
+        WHERE ProductID = %s
+        """, (data['Nom'], data['Description'], data['PrixUnitaire'], data['Stock'], data['Fournisseur'], product_id))
+    db_connection.commit()  
+
+    if cursor.rowcount > 0:
+        return jsonify({'message': 'Produit mis à jour avec succès'}), 200
+    else:
+        return jsonify({'message': 'Produit non trouvé'}), 404
 
 if __name__ == '__main__':
     app.run(debug=True)
