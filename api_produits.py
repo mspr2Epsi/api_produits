@@ -37,7 +37,7 @@ def get_product(produit_id):
         }
         return jsonify(product_data)
     else:
-        return jsonify({'message': 'Produit non trouvé'}), 404
+        return jsonify({'message': 'Product not found'}), 404
     
 @app.route('/products', methods=['POST'])
 def add_product():
@@ -53,9 +53,9 @@ def delete_product(product_id):
     cursor.execute("DELETE FROM products WHERE ProductID = %s", (product_id,))
     db_connection.commit()  
     if cursor.rowcount > 0:
-        return jsonify({'message': 'Produit supprimé avec succès'}), 200
+        return jsonify({'message': 'Product deleted with success'}), 200
     else:
-        return jsonify({'message': 'Produit non trouvé'}), 404
+        return jsonify({'message': 'Product not found'}), 404
 
 @app.route('/products/<int:product_id>', methods=['PUT'])
 def update_product(product_id):
@@ -63,7 +63,7 @@ def update_product(product_id):
 
     required_keys = ['Nom', 'Description', 'PrixUnitaire', 'Stock', 'Fournisseur']
     if not all(key in data for key in required_keys):
-        return jsonify({'message': 'Données incomplètes'}), 400
+        return jsonify({'message': 'Incomplete data'}), 400
 
     cursor.execute("""
         UPDATE products 
@@ -73,9 +73,9 @@ def update_product(product_id):
     db_connection.commit()  
 
     if cursor.rowcount > 0:
-        return jsonify({'message': 'Produit mis à jour avec succès'}), 200
+        return jsonify({'message': 'product updated with sucess'}), 200
     else:
-        return jsonify({'message': 'Produit non trouvé'}), 404
+        return jsonify({'message': 'product not found'}), 404
 
 if __name__ == '__main__':
     app.run(debug=True)
