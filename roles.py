@@ -1,11 +1,3 @@
-from flask import request, jsonify
-
-#Les roles dépendent de la valeur du token
-#1 Read
-#2 Read Update
-#3 Read Update Create User
-#4 Read Update Create Delete
-
 #pour vérifier le rôle de l'utilisateur et générer un token en conséquence
 def check_token_right(token):
     if token == 'omzRfFaKaZsI1LkziC8co7dMEb9cKgzBvJbOfrHkv0KDcXQGfMZj1iFHeLRmoXPD':
@@ -20,21 +12,21 @@ def check_token_right(token):
         return 0  
     
 def read_possible(token):
-    if check_token_right(token)>=1:
+    if check_token_right(token) >= 1:
         return True
     return False
 
 def update_possible(token):
-    if  check_token_right(token)>=2:
+    if check_token_right(token) >= 2:
         return True
     return False
 
 def creation_possible(token):
-    if check_token_right(token)>=3:
+    if check_token_right(token) >= 3:
         return True
     return False
 
 def delete_possible(token):
-    if  check_token_right(token)>=4:
+    if check_token_right(token) >= 4:
         return True
     return False

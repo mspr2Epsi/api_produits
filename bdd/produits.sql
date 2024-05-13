@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS `produits` (
   `Stock` int DEFAULT NULL,
   `Fournisseur` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`ProduitID`)
-) ENGINE=MyISAM AUTO_INCREMENT=32 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=32 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `produits`

@@ -2,15 +2,15 @@ import mysql.connector
 
 def connect_to_database():
     host = "localhost"
+    port = 3306
     user = "root"
-    password = "mdpTest"
     database = "mspr2"
 
     try:
         connection = mysql.connector.connect(
             host=host,
+            port=port,
             user=user,
-            password=password,
             database=database
         )
 
