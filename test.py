@@ -23,6 +23,47 @@ class TestFlaskApp(TestCase):
         # Example: self.cursor.execute("DROP TABLE ...")
         self.db_connection.close()  # Close the database connection
 
+    # Tests unitaires
+    def tests_unitaires(self):
+        self.test_get_product()
+        self.test_get_product_not_found()
+        self.test_add_product()
+        self.test_delete_product()
+        self.test_delete_nonexistent_product()
+        self.test_update_product()
+        self.test_update_nonexistent_product()
+
+    # Tests d'intégration
+    def test_integration(self):
+        self.test_get_products()
+        self.test_add_product()
+        self.test_update_product()
+        self.test_delete_product()
+
+    # Tests fonctionnels
+    def test_fonctionnel(self):
+        self.test_get_products()
+        self.test_add_product()
+        self.test_update_product()
+        self.test_delete_product()
+
+    # Tests de régression
+    def test_regression(self):
+        self.test_get_product()
+        self.test_get_product_not_found()
+        self.test_update_nonexistent_product()
+
+    # Tests de performance
+    def test_performance(self):
+        # Placeholder
+        pass
+
+    # Tests de sécurité
+    def test_securite(self):
+        # Placeholder
+        pass
+
+
     def test_get_products(self):
         response = self.client.get('/products', headers={'Authorization': 'omzRfFaKaZsI1LkziC8co7dMEb9cKgzBvJbOfrHkv0KDcXQGfMZj1iFHeLRmoXPD'})
         self.assert200(response)
@@ -84,5 +125,31 @@ class TestFlaskApp(TestCase):
         self.assert404(response)
         self.assertIn(b'Product not found', response.data)
 
-if __name__ == '__main__':
-    unittest.main()
+
+# if __name__ == '__main__':
+#     choix = int(input("""Liste des tests :
+#                   1. Tests unitaires
+#                   2. Tests d'intégration
+#                   3. Tests fonctionnels
+#                   4. Tests de régression
+#                   Quel est votre choix ?
+#                   """))
+
+#     choice_ok = [1, 2, 3, 4]
+#     while choix not in choice_ok:
+#         choix = int(input("Veuillez renseigner un choix valide (1, 2, 3, 4)\n"))
+
+#     suite = unittest.TestSuite()
+#     test_loader = unittest.TestLoader()
+
+#     if choix == 1:
+#         suite.addTests(test_loader.loadTestsFromName('TestFlaskApp.tests_unitaires'))
+#     elif choix == 2:
+#         suite.addTests(test_loader.loadTestsFromName('TestFlaskApp.test_integration'))
+#     elif choix == 3:
+#         suite.addTests(test_loader.loadTestsFromName('TestFlaskApp.test_fonctionnel'))
+#     elif choix == 4:
+#         suite.addTests(test_loader.loadTestsFromName('TestFlaskApp.test_regression'))
+
+#     runner = unittest.TextTestRunner()
+#     runner.run(suite)
