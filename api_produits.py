@@ -6,14 +6,23 @@ from datetime import datetime
 
 def create_app():
     app = Flask(__name__)
+    rabbitmq_host = 'rabbitmq'
+    rabbitmq_port = 5672
+    rabbitmq_user = 'user'
+    rabbitmq_password = 'password'
 
-    #pour le message broker
+    credentials = pika.PlainCredentials(rabbitmq_user, rabbitmq_password)
     connection = pika.BlockingConnection(
-        pika.ConnectionParameters(host='localhost'))
+            pika.ConnectionParameters(
+                host=rabbitmq_host,
+                port=rabbitmq_port,
+                credentials=credentials
+            )
+    )
     channel = connection.channel()
     channel.queue_declare(queue='message_broker_client')
 
-    # Database connection
+
     db_connection = connect_to_database()
     cursor = db_connection.cursor()
 
@@ -135,4 +144,6 @@ def create_app():
 
 if __name__ == '__main__':
     app = create_app()
-    app.run(debug=True)
+    #app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000,debug=True)
+
